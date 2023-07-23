@@ -1,8 +1,9 @@
 from django.http import  HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, render
+from django.shortcuts import get_object_or_404, render, redirect
 from django.urls import reverse
 from django.views import generic
 from django.utils import timezone
+
 
 from .models import Choice, Question
 
@@ -13,7 +14,7 @@ class IndexView(generic.ListView):
 
     def get_queryset(self):
         """Return the last five published questions."""
-        return Question.objects.order_by("-pub_date")[:5]
+        return Question.objects.order_by("-pub_date")[:]
 
 
 class DetailView(generic.DetailView):
@@ -96,3 +97,22 @@ def add_question(request):
          )
          new_question.save()
      return HttpResponseRedirect(reverse("polls:index",))
+def update(request,id):
+    question = get_object_or_404(Question, id=id)
+    if request.method =='GET':
+        return render (request,'polls/update_question.html',{'question':question})
+    if request.method == "POST":
+        newquestion = request.POST.get('input')
+        question.question_text = newquestion
+        question.save()
+        return render (request,'polls/detail.html', {'question': question})
+    
+
+def delete(request,id):
+    question = get_object_or_404(Question, id=id)
+    if request.method =='POST':
+        question.delete()
+        return redirect('polls:index')
+    else:
+        return render (request, 'polls/delete_question.html', {'question':question})
+

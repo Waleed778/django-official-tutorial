@@ -1,0 +1,19 @@
+li a {
+  color: green;
+}
+
+body {
+  background: white url("images/bg.jpeg") no-repeat;
+}
+
+li {
+  .options {
+    display: none;
+  }
+}
+
+li:hover {
+  .options {
+    display: inline-block;
+  }
+}
